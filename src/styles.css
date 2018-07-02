@@ -1,0 +1,64 @@
+:root {
+  --wave-picker-highlight-color: lightgrey
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.adsr, .lfo {
+  display: flex;
+}
+
+.adsr div {
+  padding: 0 10px;
+}
+
+.adsr div:first {
+  padding: 0;
+}
+
+.button-icon-left {
+  margin-right: 8px;
+}
+
+.button-icon-right {
+  margin-left: 8px;
+}
+
+.inline {
+  display: inline-block!important;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.range {
+  display: flex
+}
+
+.vco {
+  margin: 10px;
+  padding: 10px;
+}
+
+.wave-picker {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.wave-picker-collapsed {
+  border: 1px solid blue;
+  padding: 5px;
+}
+
+.wave-picker-option:hover {
+  background-color: var(--wave-picker-highlight-color);
+}
+
+.wave-picker-option-selected {
+  background-color: var(--wave-picker-highlight-color);
+}
