@@ -1,13 +1,16 @@
 import React from "react";
 import WebMidi from "webmidi";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
-import DecibalMeter from "./components/DecibalMeter";
 import LFO from "./components/LFO";
 import MasterGainUI from "./components/MasterGainUI";
 import MidiInputSelector from "./components/MidiInputSelector";
 import Vco from "./components/Vco";
 
-class App extends React.Component {
+import VcoActions from "./actions/VcoActions";
+
+class HellOsc extends React.Component {
   state = {
     gain: 0.5,
     mainOutputMuted: false,
@@ -18,12 +21,16 @@ class App extends React.Component {
   };
 
   componentDidMount() {
+    const { changeVcoOutput } = this.props;
     const { gain } = this.state;
     const audioContext = new (window.AudioContext ||
       window.webkitAudioContext)();
     const mainOutput = audioContext.createGain();
     mainOutput.gain.value = gain;
     mainOutput.connect(audioContext.destination);
+    changeVcoOutput("vco1", mainOutput);
+    changeVcoOutput("vco2", mainOutput);
+    changeVcoOutput("vco3", mainOutput);
     this.setState({ audioContext, mainOutput });
 
     this.enableMidi();
@@ -35,6 +42,11 @@ class App extends React.Component {
     if (WebMidi.enabled && !midiEnabled) {
       this.enableMidi();
     }
+  }
+
+  componentWillUnmount() {
+    const { audioContext } = this.state;
+    audioContext.close();
   }
 
   enableMidi = () => {
@@ -132,31 +144,37 @@ class App extends React.Component {
             selectedInput={selectedMidiInput}
             changeMidiInput={this.changeMidiInput}
           />
-          <Vco
-            audioContext={audioContext}
-            label="VCO 1"
-            mainOutputGain={gain}
-            mainOutput={mainOutput}
-            mainOutputMuted={mainOutputMuted}
-            notes={notes}
-          />
-          <Vco
-            audioContext={audioContext}
-            label="VCO 2"
-            mainOutputGain={gain}
-            mainOutput={mainOutput}
-            mainOutputMuted={mainOutputMuted}
-            notes={notes}
-          />
-          <Vco
-            audioContext={audioContext}
-            label="VCO 3"
-            mainOutputGain={gain}
-            mainOutput={mainOutput}
-            mainOutputMuted={mainOutputMuted}
-            notes={notes}
-          />
-          <LFO audioContext={audioContext} gain={gain} output={mainOutput} />
+          <div className="vco-container">
+            <Vco
+              audioContext={audioContext}
+              id="vco1"
+              label="VCO 1"
+              mainOutputGain={gain}
+              mainOutput={mainOutput}
+              mainOutputMuted={mainOutputMuted}
+              notes={notes}
+            />
+            <Vco
+              audioContext={audioContext}
+              id="vco2"
+              label="VCO 2"
+              mainOutputGain={gain}
+              mainOutput={mainOutput}
+              mainOutputMuted={mainOutputMuted}
+              notes={notes}
+            />
+            <Vco
+              audioContext={audioContext}
+              id="vco3"
+              label="VCO 3"
+              mainOutputGain={gain}
+              mainOutput={mainOutput}
+              mainOutputMuted={mainOutputMuted}
+              notes={notes}
+            />
+          </div>
+          <LFO audioContext={audioContext} id="lfo1" label="LFO 1" />
+          <LFO audioContext={audioContext} id="lfo2" label="LFO 2" />
           <MasterGainUI gain={gain} changeGain={this.changeGain} />
         </div>
       );
@@ -166,4 +184,13 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    lfo: state.lfo,
+    vco: state.vco
+  };
+};
+
+const mapDispatchToProps = dispatch => bindActionCreators(VcoActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(HellOsc);

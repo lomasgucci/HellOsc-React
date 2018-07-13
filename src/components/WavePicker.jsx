@@ -55,17 +55,15 @@ class WavePicker extends React.Component {
     }
   };
 
-  selectValue = value => {
-    const { onSelect } = this.props;
-    onSelect(value);
+  selectValue = wave => {
+    const { id, onSelect } = this.props;
+    onSelect(id, wave);
     if (this.isChromiumWave()) {
       this.toggleChromiumMenu({ currentTarget: "" }, false);
     } else {
       this.toggleOpen(null, false);
     }
   };
-
-  waveToWavePickerOption = wave => {};
 
   render() {
     const { value } = this.props;

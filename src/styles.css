@@ -1,14 +1,10 @@
 :root {
-  --wave-picker-highlight-color: lightgrey
+  --wave-picker-highlight-color: lightgrey;
 }
 
 .App {
   font-family: sans-serif;
   text-align: center;
-}
-
-.adsr, .lfo {
-  display: flex;
 }
 
 .adsr div {
@@ -28,7 +24,12 @@
 }
 
 .inline {
-  display: inline-block!important;
+  display: inline-block !important;
+}
+
+.lfo-controls {
+  align-items: center;
+  display: flex;
 }
 
 .pointer {
@@ -36,12 +37,16 @@
 }
 
 .range {
-  display: flex
+  display: flex;
 }
 
 .vco {
   margin: 10px;
   padding: 10px;
+}
+
+.vco-container {
+  display: flex;
 }
 
 .wave-picker {

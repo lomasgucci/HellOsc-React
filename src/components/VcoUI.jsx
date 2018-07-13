@@ -8,19 +8,20 @@ import WavePicker from "./WavePicker";
 
 function VcoUI(props) {
   const {
+    delay,
     attack,
     decay,
     detune,
     gain,
+    id,
     label,
     muted,
-    oscMenuAnchor,
-    oscMenuOpen,
     oscType,
     pan,
     release,
     semitoneDetune,
     sustain,
+    changeDelay,
     changeAttack,
     changeDecay,
     changeDetune,
@@ -30,8 +31,7 @@ function VcoUI(props) {
     changeRelease,
     changeSemitoneDetune,
     changeSustain,
-    toggleMuted,
-    toggleOscMenu
+    toggleBypassed
   } = props;
 
   return (
@@ -40,14 +40,14 @@ function VcoUI(props) {
         {label}
       </Typography>
 
-      <WavePicker onSelect={changeOscType} value={oscType} />
+      <WavePicker id={id} onSelect={changeOscType} value={oscType} />
       <Range
         label="Gain"
         min="0"
         max="1"
         step=".05"
         value={gain}
-        onChange={changeGain}
+        onChange={event => changeGain(id, event.target.value)}
         output={Math.round(gain * 100) + "%"}
       />
       <Range
@@ -56,7 +56,7 @@ function VcoUI(props) {
         max="1"
         step=".01"
         value={pan}
-        onChange={changePan}
+        onChange={event => changePan(id, event.target.value)}
         output={Math.round(pan * 100)}
       />
       <Range
@@ -65,7 +65,7 @@ function VcoUI(props) {
         max="36"
         step="1"
         value={semitoneDetune}
-        onChange={changeSemitoneDetune}
+        onChange={event => changeSemitoneDetune(id, event.target.value)}
         output={semitoneDetune}
       />
       <Range
@@ -74,22 +74,29 @@ function VcoUI(props) {
         max="100"
         step="1"
         value={detune}
-        onChange={changeDetune}
+        onChange={event => changeDetune(id, event.target.value)}
         output={detune}
       />
       <AdsrUI
+        delay={delay}
         attack={attack}
         decay={decay}
         sustain={sustain}
         release={release}
+        id={id}
         label={label}
-        changeAttack={changeAttack}
-        changeDecay={changeDecay}
-        changeSustain={changeSustain}
-        changeRelease={changeRelease}
+        changeDelay={event => changeDelay(id, event.target.value)}
+        changeAttack={event => changeAttack(id, event.target.value)}
+        changeDecay={event => changeDecay(id, event.target.value)}
+        changeSustain={event => changeSustain(id, event.target.value)}
+        changeRelease={event => changeRelease(id, event.target.value)}
       />
       <div>Bypass {label}</div>
-      <input type="checkbox" checked={muted} onChange={toggleMuted} />
+      <input
+        type="checkbox"
+        checked={muted}
+        onChange={event => toggleBypassed(id, event.target.checked)}
+      />
     </div>
   );
 }

@@ -4,6 +4,8 @@ import Waves from "@mohayonao/wave-tables";
 class VcoTone extends React.Component {
   componentDidMount() {
     const {
+      id,
+      label,
       attack,
       audioContext,
       decay,
@@ -11,8 +13,8 @@ class VcoTone extends React.Component {
       note,
       oscType,
       output,
-      pan,
-      sustain
+      sustain,
+      registerParameter
     } = this.props;
 
     const noteFreq = this.noteNumberToFrequency(note.note.number);
@@ -32,20 +34,16 @@ class VcoTone extends React.Component {
       now + attack + decay
     );
 
-    this.panner = audioContext.createStereoPanner();
-    this.panner.pan.value = pan;
+    // console.log("BREFORE REGISTER");
+    // registerParameter(id + "gain", label + " Gain", this.gain.gain);
 
-    this.oscillator
-      .connect(this.panner)
-      .connect(this.oscGain)
-      .connect(output);
+    this.oscillator.connect(this.oscGain).connect(output);
     this.oscillator.start();
   }
 
   componentDidUpdate(prevProps) {
-    const { audioContext, detune, oscType, pan } = this.props;
+    const { audioContext, detune, oscType } = this.props;
     this.oscillator.detune.setValueAtTime(detune, audioContext.currentTime);
-    this.panner.pan.setValueAtTime(pan, audioContext.currentTime);
     this.setOscillator(oscType);
   }
   componentWillUnmount() {
@@ -59,9 +57,8 @@ class VcoTone extends React.Component {
     }
     setTimeout(() => {
       this.oscillator.stop();
-      this.oscillator.disconnect(this.panner);
-      this.panner.disconnect(this.oscGain);
-      this.oscGain.disconnect(output);
+      this.oscillator.disconnect();
+      this.oscGain.disconnect();
     }, release * 1000);
   }
 
