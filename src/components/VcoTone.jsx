@@ -1,8 +1,13 @@
 import React from "react";
 import Waves from "@mohayonao/wave-tables";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+
+import VoiceActions from "../actions/VoiceActions";
 
 class VcoTone extends React.Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
     const {
       id,
       label,
@@ -14,18 +19,17 @@ class VcoTone extends React.Component {
       oscType,
       output,
       sustain,
-      registerParameter
+      registerVoice
     } = this.props;
-
     const noteFreq = this.noteNumberToFrequency(note.note.number);
+    const now = audioContext.currentTime;
 
     this.oscillator = audioContext.createOscillator();
-    this.oscillator.frequency.value = noteFreq;
-    this.oscillator.detune.value = detune;
+    this.oscillator.frequency.setValueAtTime(noteFreq, now);
+    this.oscillator.detune.setValueAtTime(detune, now);
     this.setOscillator(oscType);
 
     this.oscGain = audioContext.createGain();
-    const now = audioContext.currentTime;
     const sustainGain = note.velocity * sustain;
     this.oscGain.gain.setValueAtTime(0, now);
     this.oscGain.gain.linearRampToValueAtTime(note.velocity, now + attack);
@@ -34,10 +38,12 @@ class VcoTone extends React.Component {
       now + attack + decay
     );
 
-    // console.log("BREFORE REGISTER");
-    // registerParameter(id + "gain", label + " Gain", this.gain.gain);
-
     this.oscillator.connect(this.oscGain).connect(output);
+
+    registerVoice(id, this.oscillator);
+  }
+
+  componentDidMount() {
     this.oscillator.start();
   }
 
@@ -47,9 +53,16 @@ class VcoTone extends React.Component {
     this.setOscillator(oscType);
   }
   componentWillUnmount() {
-    const { audioContext, muted, output, release } = this.props;
+    const {
+      audioContext,
+      bypassed,
+      id,
+      output,
+      release,
+      unregisterVoice
+    } = this.props;
     const now = audioContext.currentTime;
-    if (muted) {
+    if (bypassed) {
       this.oscGain.gain.setValueAtTime(0, now);
     } else {
       this.oscGain.gain.cancelAndHoldAtTime(now);
@@ -59,6 +72,7 @@ class VcoTone extends React.Component {
       this.oscillator.stop();
       this.oscillator.disconnect();
       this.oscGain.disconnect();
+      unregisterVoice(id, this.oscillator);
     }, release * 1000);
   }
 
@@ -91,4 +105,11 @@ class VcoTone extends React.Component {
   }
 }
 
-export default VcoTone;
+const mapStateToProps = state => {
+  return { lfo: state.lfo, paramRouting: state.paramRouting };
+};
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ ...VoiceActions }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(VcoTone);

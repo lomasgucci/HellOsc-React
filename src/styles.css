@@ -7,13 +7,17 @@
   text-align: center;
 }
 
+/* .adsr {
+  display: flex;
+}
+
 .adsr div {
   padding: 0 10px;
 }
 
 .adsr div:first {
   padding: 0;
-}
+} */
 
 .button-icon-left {
   margin-right: 8px;
@@ -21,6 +25,11 @@
 
 .button-icon-right {
   margin-left: 8px;
+}
+
+.graphic-adsr {
+  width: 200px;
+  height: 100px;
 }
 
 .inline {
@@ -37,7 +46,19 @@
 }
 
 .range {
+  align-items: flex-start;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.range input {
+  align-self: center;
+  width: 60px;
+}
+
+.range-field {
+  width: 100px;
 }
 
 .vco {
@@ -47,6 +68,12 @@
 
 .vco-container {
   display: flex;
+}
+
+.vertical-range {
+  margin-top: 100px;
+  transform: rotate(-90deg) translateY(40px);
+  transform-origin: top left;
 }
 
 .wave-picker {

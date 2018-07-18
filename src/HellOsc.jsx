@@ -3,12 +3,18 @@ import WebMidi from "webmidi";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
+import IconButton from "@material-ui/core/IconButton";
+
+import EffectsMenu from "./components/EffectsMenu";
 import LFO from "./components/LFO";
 import MasterGainUI from "./components/MasterGainUI";
 import MidiInputSelector from "./components/MidiInputSelector";
+import ModulationRouter from "./components/ModulationRouter";
 import Vco from "./components/Vco";
 
+import store from "./store";
 import VcoActions from "./actions/VcoActions";
+import LfoActions from "./actions/LfoActions";
 
 class HellOsc extends React.Component {
   state = {
@@ -123,7 +129,12 @@ class HellOsc extends React.Component {
     this.setState({ notes });
   };
 
+  reset = () => {
+    store.dispatch({ type: "RESET" });
+  };
+
   render() {
+    const { createLfo, lfo } = this.props;
     const {
       audioContext,
       gain,
@@ -144,6 +155,9 @@ class HellOsc extends React.Component {
             selectedInput={selectedMidiInput}
             changeMidiInput={this.changeMidiInput}
           />
+          <IconButton onClick={this.reset}>
+            <i className="fal fa-trash" />
+          </IconButton>
           <div className="vco-container">
             <Vco
               audioContext={audioContext}
@@ -173,9 +187,19 @@ class HellOsc extends React.Component {
               notes={notes}
             />
           </div>
-          <LFO audioContext={audioContext} id="lfo1" label="LFO 1" />
-          <LFO audioContext={audioContext} id="lfo2" label="LFO 2" />
           <MasterGainUI gain={gain} changeGain={this.changeGain} />
+          <ModulationRouter />
+          <EffectsMenu createLfo={createLfo} />
+          {Object.keys(lfo).map(id => {
+            return (
+              <LFO
+                audioContext={audioContext}
+                key={id}
+                id={id}
+                masterGainLevel={gain}
+              />
+            );
+          })}
         </div>
       );
     } else {
@@ -191,6 +215,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => bindActionCreators(VcoActions, dispatch);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ ...VcoActions, ...LfoActions }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(HellOsc);

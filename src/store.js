@@ -1,13 +1,24 @@
 import { combineReducers, createStore } from "redux";
+import { resettableReducer } from "reduxsauce";
 
 import lfoReducers from "./reducers/LfoReducers";
+import modulationDestinationRouters from "./reducers/ModulationDestinationReducers";
+import modulationRoutingReducers from "./reducers/ModulationRoutingReducers";
+import modulationSourceReducers from "./reducers/ModulationSourceReducers";
 import paramReduceres from "./reducers/ParamRoutingReducers";
 import vcoReducers from "./reducers/VcoReducers";
+import voiceReducers from "./reducers/VoiceReducers";
+
+const resettable = resettableReducer("RESET");
 
 const allReducers = combineReducers({
-  lfo: lfoReducers,
+  lfo: resettable(lfoReducers),
+  modDestinations: modulationDestinationRouters,
+  modRoutes: resettable(modulationRoutingReducers),
+  modSources: modulationSourceReducers,
   paramRouting: paramReduceres,
-  vco: vcoReducers
+  vco: resettable(vcoReducers),
+  voices: voiceReducers
 });
 
 export default createStore(

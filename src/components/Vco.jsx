@@ -26,6 +26,7 @@ class Vco extends React.Component {
     this.vcoDelay.delayTime.setValueAtTime(delay, now);
     registerParameter(id + "Gain", label + " Gain", this.vcoOutput.gain);
     registerParameter(id + "Pan", label + " Pan", this.vcoPanner.pan);
+    registerParameter(id + " Pitch", label + " Pitch", null);
     if (output)
       this.vcoDelay
         .connect(this.vcoPanner)
@@ -37,7 +38,6 @@ class Vco extends React.Component {
     const { audioContext, id } = this.props;
     const { delay, gain, pan } = this.props.vco[id];
     const now = audioContext.currentTime;
-    console.log("DELAY", delay);
     this.vcoOutput.gain.setValueAtTime(gain, now);
     this.vcoPanner.pan.setValueAtTime(pan, now);
     this.vcoDelay.delayTime.setValueAtTime(delay, now);
@@ -97,7 +97,7 @@ class Vco extends React.Component {
             gain={gain}
             id={id}
             label={label}
-            muted={muted}
+            bypassed={muted}
             oscMenuAnchor={oscMenuAnchor}
             oscMenuOpen={oscMenuOpen}
             oscType={oscType}
@@ -128,7 +128,7 @@ class Vco extends React.Component {
               label={label}
               detune={fullDetune}
               key={label + "Note" + note.note.number}
-              muted={muted}
+              bypassed={muted}
               note={note}
               numberOfNotes={notes.length}
               oscType={oscType}
@@ -151,7 +151,7 @@ class Vco extends React.Component {
             gain={gain}
             id={id}
             label={label}
-            muted={muted}
+            bypassed={muted}
             oscMenuAnchor={oscMenuAnchor}
             oscMenuOpen={oscMenuOpen}
             oscType={oscType}

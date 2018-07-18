@@ -6,9 +6,11 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import Typography from "@material-ui/core/Typography";
 
-import WavePickerOption from "./WavePickerOption";
+import SawtoothWaveIcon from "./icons/SawtoothWaveIcon";
+import SineWaveIcon from "./icons/SineWaveIcon";
+import SquareWaveIcon from "./icons/SquareWaveIcon";
+import TriangleWaveIcon from "./icons/TriangleWaveIcon";
 
 class WavePicker extends React.Component {
   state = {
@@ -66,15 +68,26 @@ class WavePicker extends React.Component {
   };
 
   render() {
-    const { value } = this.props;
+    const { className, disabled, includeChromiumWaves, value } = this.props;
     const { anchor, chromiumOpen, open } = this.state;
     return (
-      <div>
+      <div className={className}>
         <Button
+          disabled={disabled}
           variant="flat"
           size="small"
           onClick={event => this.toggleOpen(event, true)}
         >
+          {value === "sine" && <SineWaveIcon className="button-icon-left" />}
+          {value === "triangle" && (
+            <TriangleWaveIcon className="button-icon-left" />
+          )}
+          {value === "square" && (
+            <SquareWaveIcon className="button-icon-left" />
+          )}
+          {value === "sawtooth" && (
+            <SawtoothWaveIcon className="button-icon-left" />
+          )}
           <span>{value}</span>
           <i className="fas fa-caret-down button-icon-right" />
         </Button>
@@ -87,57 +100,73 @@ class WavePicker extends React.Component {
             onClick={() => this.selectValue("sine")}
             selected={value === "sine"}
           >
-            Sine
+            <ListItemIcon>
+              <SineWaveIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sine" />
           </MenuItem>
           <MenuItem
             onClick={() => this.selectValue("sawtooth")}
             selected={value === "sawtooth"}
           >
-            Sawtooth
+            <ListItemIcon>
+              <SawtoothWaveIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sawtooth" />
           </MenuItem>
           <MenuItem
             onClick={() => this.selectValue("square")}
             selected={value === "square"}
           >
-            Square
+            <ListItemIcon>
+              <SquareWaveIcon />
+            </ListItemIcon>
+            <ListItemText primary="Square" />
           </MenuItem>
           <MenuItem
             onClick={() => this.selectValue("triangle")}
             selected={value === "triangle"}
           >
-            Triangle
-          </MenuItem>
-          <MenuItem onClick={event => this.toggleChromiumMenu(event, true)}>
-            <ListItemText primary="Chromium" />
             <ListItemIcon>
-              <i className="fas fa-caret-right" />
+              <TriangleWaveIcon />
             </ListItemIcon>
+            <ListItemText primary="Triangle" />
           </MenuItem>
-        </Menu>
-        <Menu
-          anchorEl={anchor}
-          open={chromiumOpen}
-          onClose={event => this.toggleChromiumMenu(event, false)}
-        >
-          <MenuItem
-            onClick={event => this.toggleChromiumMenu(event, false)}
-            id="chromiumMenuBackButton"
-          >
-            <ListItemIcon>
-              <i className="fas fa-caret-left" />
-            </ListItemIcon>
-            <ListItemText primary="Back" />
-          </MenuItem>
-          {Object.keys(Waves).map(wave => (
-            <MenuItem
-              key={wave}
-              onClick={() => this.selectValue(wave)}
-              selected={value === wave}
-            >
-              {wave}
+          {includeChromiumWaves && (
+            <MenuItem onClick={event => this.toggleChromiumMenu(event, true)}>
+              <ListItemText primary="Chromium" />
+              <ListItemIcon>
+                <i className="fas fa-caret-right" />
+              </ListItemIcon>
             </MenuItem>
-          ))}
+          )}
         </Menu>
+        {includeChromiumWaves && (
+          <Menu
+            anchorEl={anchor}
+            open={chromiumOpen}
+            onClose={event => this.toggleChromiumMenu(event, false)}
+          >
+            <MenuItem
+              onClick={event => this.toggleChromiumMenu(event, false)}
+              id="chromiumMenuBackButton"
+            >
+              <ListItemIcon>
+                <i className="fas fa-caret-left" />
+              </ListItemIcon>
+              <ListItemText primary="Back" />
+            </MenuItem>
+            {Object.keys(Waves).map(wave => (
+              <MenuItem
+                key={wave}
+                onClick={() => this.selectValue(wave)}
+                selected={value === wave}
+              >
+                {wave}
+              </MenuItem>
+            ))}
+          </Menu>
+        )}
       </div>
     );
   }
