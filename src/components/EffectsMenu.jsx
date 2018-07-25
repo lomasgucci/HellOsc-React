@@ -1,9 +1,14 @@
 import React from "react";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import SineWaveIcon from "./icons/SineWaveIcon";
+
+import LfoActions from "../actions/LfoActions";
+import ModulationSourceActions from "../actions/ModulationSourceActions";
 
 class EffectsMenu extends React.Component {
   state = {
@@ -11,9 +16,15 @@ class EffectsMenu extends React.Component {
     open: false
   };
 
+  getIdentifier = () =>
+    Math.random()
+      .toString(36)
+      .substr(2, 9);
+
   addLfo = event => {
     const { createLfo } = this.props;
-    createLfo();
+    const id = this.getIdentifier();
+    createLfo(id);
     this.toggleMenu(event);
   };
 
@@ -38,4 +49,13 @@ class EffectsMenu extends React.Component {
   }
 }
 
-export default EffectsMenu;
+const mapStateToProps = state => {
+  return {
+    lfo: state.lfo
+  };
+};
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ ...LfoActions }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(EffectsMenu);

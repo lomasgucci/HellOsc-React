@@ -1,10 +1,15 @@
 import { createReducer } from "reduxsauce";
 import { ModulationDestinationConstants } from "../actions/ModulationDestinationActions";
+import { getIdentifier } from "../utils";
 
 const INITIAL_STATE = {};
 
-const registerModulationDestination = (state, { id, description }) => {
-  return { ...state, [id]: description };
+const registerModulationDestination = (
+  state,
+  { paramId, description, reference, maxDepth }
+) => {
+  const id = getIdentifier();
+  return { ...state, [id]: { id, paramId, description, reference, maxDepth } };
 };
 
 export default createReducer(INITIAL_STATE, {

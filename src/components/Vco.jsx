@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import VcoTone from "./VcoTone";
 import VcoUI from "./VcoUI";
 
-import ParamRoutingActions from "../actions/ParamRoutingActions";
+import ModulationDestinationActions from "../actions/ModulationDestinationActions";
 import VcoActions from "../actions/VcoActions";
 
 class Vco extends React.Component {
@@ -15,7 +15,12 @@ class Vco extends React.Component {
   };
 
   componentDidMount() {
-    const { audioContext, id, label, registerParameter } = this.props;
+    const {
+      audioContext,
+      id,
+      label,
+      registerModulationDestination
+    } = this.props;
     const { delay, gain, output, pan } = this.props.vco[id];
     const now = audioContext.currentTime;
     this.vcoOutput = audioContext.createGain();
@@ -24,9 +29,20 @@ class Vco extends React.Component {
     this.vcoOutput.gain.setValueAtTime(gain, now);
     this.vcoPanner.pan.setValueAtTime(pan, now);
     this.vcoDelay.delayTime.setValueAtTime(delay, now);
-    registerParameter(id + "Gain", label + " Gain", this.vcoOutput.gain);
-    registerParameter(id + "Pan", label + " Pan", this.vcoPanner.pan);
-    registerParameter(id + " Pitch", label + " Pitch", null);
+    registerModulationDestination(
+      id + "Gain",
+      label + " Gain",
+      this.vcoOutput.gain,
+      1
+    );
+    registerModulationDestination(
+      id + "Pan",
+      label + " Pan",
+      this.vcoPanner.pan,
+      1
+    );
+    registerModulationDestination(id, label + " Pitch", "frequency", 36);
+    registerModulationDestination(id, label + " Fine Pitch", "detune", 100);
     if (output)
       this.vcoDelay
         .connect(this.vcoPanner)
@@ -42,10 +58,6 @@ class Vco extends React.Component {
     this.vcoPanner.pan.setValueAtTime(pan, now);
     this.vcoDelay.delayTime.setValueAtTime(delay, now);
   }
-
-  /*
-    ENVELOPE CONTROLLERS
-  */
 
   toggleOscMenu = oscMenuAnchor =>
     this.setState({ oscMenuOpen: !this.state.oscMenuOpen, oscMenuAnchor });
@@ -67,8 +79,7 @@ class Vco extends React.Component {
       changeSemitoneDetune,
       changePan,
       changeGain,
-      toggleBypassed,
-      registerParameter
+      toggleBypassed
     } = this.props;
     const {
       oscType,
@@ -138,7 +149,6 @@ class Vco extends React.Component {
               decay={decay}
               sustain={sustain}
               release={release}
-              registerParameter={registerParameter}
             />
           ))}
         </div>
@@ -188,6 +198,12 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ ...ParamRoutingActions, ...VcoActions }, dispatch);
+  bindActionCreators(
+    { ...ModulationDestinationActions, ...VcoActions },
+    dispatch
+  );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Vco);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Vco);

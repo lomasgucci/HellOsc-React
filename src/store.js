@@ -5,7 +5,6 @@ import lfoReducers from "./reducers/LfoReducers";
 import modulationDestinationRouters from "./reducers/ModulationDestinationReducers";
 import modulationRoutingReducers from "./reducers/ModulationRoutingReducers";
 import modulationSourceReducers from "./reducers/ModulationSourceReducers";
-import paramReduceres from "./reducers/ParamRoutingReducers";
 import vcoReducers from "./reducers/VcoReducers";
 import voiceReducers from "./reducers/VoiceReducers";
 
@@ -16,7 +15,6 @@ const allReducers = combineReducers({
   modDestinations: modulationDestinationRouters,
   modRoutes: resettable(modulationRoutingReducers),
   modSources: modulationSourceReducers,
-  paramRouting: paramReduceres,
   vco: resettable(vcoReducers),
   voices: voiceReducers
 });

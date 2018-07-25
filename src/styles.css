@@ -41,6 +41,10 @@
   display: flex;
 }
 
+.modulation-router {
+  margin: 10px;
+}
+
 .pointer {
   cursor: pointer;
 }

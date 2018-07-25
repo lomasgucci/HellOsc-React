@@ -6,10 +6,10 @@ import { connect } from "react-redux";
 import IconButton from "@material-ui/core/IconButton";
 
 import EffectsMenu from "./components/EffectsMenu";
-import LFO from "./components/LFO";
+import Lfo from "./components/Lfo/Lfo";
 import MasterGainUI from "./components/MasterGainUI";
 import MidiInputSelector from "./components/MidiInputSelector";
-import ModulationRouter from "./components/ModulationRouter";
+import ModulationRouter from "./components/ModulationRouter/ModulationRouter";
 import Vco from "./components/Vco";
 
 import store from "./store";
@@ -107,6 +107,13 @@ class HellOsc extends React.Component {
         "all",
         this.noteOff
       );
+      WebMidi.getInputById(selectedMidiInput).addListener(
+        "controlchange",
+        "all",
+        event => {
+          //console.log(event);
+        }
+      );
     }
     this.setState({ selectedMidiInput });
     window.localStorage.setItem("midi-controller-id", selectedMidiInput);
@@ -189,10 +196,10 @@ class HellOsc extends React.Component {
           </div>
           <MasterGainUI gain={gain} changeGain={this.changeGain} />
           <ModulationRouter />
-          <EffectsMenu createLfo={createLfo} />
+          <EffectsMenu />
           {Object.keys(lfo).map(id => {
             return (
-              <LFO
+              <Lfo
                 audioContext={audioContext}
                 key={id}
                 id={id}
@@ -218,4 +225,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ ...VcoActions, ...LfoActions }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(HellOsc);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HellOsc);

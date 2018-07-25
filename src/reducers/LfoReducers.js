@@ -6,28 +6,27 @@ const initialLfoState = {
   outputs: [],
   waveType: "sine",
   frequency: 2.0,
-  delay: 0.0,
+  delay: 0,
   bypassed: false
 };
 
 const INITIAL_STATE = {};
+let counter = 1;
 
-const getIdentifier = () =>
-  Math.random()
-    .toString(36)
-    .substr(2, 9);
-
-const createLfo = state => {
-  const id = getIdentifier();
+const createLfo = (state, { lfoId }) => {
+  const description = "LFO " + counter;
+  counter++;
   return {
     ...state,
-    [id]: { ...initialLfoState }
+    [lfoId]: { ...initialLfoState, description }
   };
 };
 
 const removeLfo = (state, { lfoId }) => {
   const newState = { ...state };
   delete newState[lfoId];
+  console.log(lfoId, newState);
+  if (Object.keys(newState).length === 0) counter = 1;
   return newState;
 };
 

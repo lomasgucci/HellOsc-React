@@ -5,18 +5,7 @@ import Knob from "react-rotary-knob";
 import TextField from "@material-ui/core/TextField";
 
 function Range(props) {
-  const {
-    label,
-    max,
-    min,
-    step,
-    value,
-    onChange,
-    output,
-    disabled,
-    vertical,
-    reverse
-  } = props;
+  const { label, max, min, step, value, onChange, output, disabled } = props;
 
   return (
     <div className="range">

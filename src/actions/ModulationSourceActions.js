@@ -1,7 +1,8 @@
 import { createActions } from "reduxsauce";
 
 const { Types, Creators } = createActions({
-  registerModulationSource: ["id", "description"]
+  registerModulationSource: ["id", "description", "modType"],
+  unregisterModulationSource: ["id"]
 });
 
 export const ModulationSourceConstants = Types;

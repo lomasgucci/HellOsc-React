@@ -1,7 +1,7 @@
 import { createActions } from "reduxsauce";
 
 const { Types, Creators } = createActions({
-  createLfo: null,
+  createLfo: ["lfoId"],
   removeLfo: ["lfoId"],
   setLfoOutputs: ["lfoId", "outputs"],
   changeLfoWaveType: ["lfoId", "waveType"],

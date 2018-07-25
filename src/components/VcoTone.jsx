@@ -106,10 +106,13 @@ class VcoTone extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return { lfo: state.lfo, paramRouting: state.paramRouting };
+  return { lfo: state.lfo };
 };
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators({ ...VoiceActions }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(VcoTone);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VcoTone);

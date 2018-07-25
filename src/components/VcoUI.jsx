@@ -3,7 +3,7 @@ import React from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 
-import AdsrUI from "./AdsrUI";
+import AdsrUI from "./Adsr/AdsrUI";
 import GraphicAdsr from "./Adsr/GraphicAdsr";
 import Range from "./Range";
 import WavePicker from "./WavePicker";
@@ -35,6 +35,36 @@ function VcoUI(props) {
     changeSustain,
     toggleBypassed
   } = props;
+
+  /*
+      <AdsrUI
+        delay={delay}
+        attack={attack}
+        decay={decay}
+        sustain={sustain}
+        release={release}
+        id={id}
+        label={label}
+        disabled={bypassed}
+        changeDelay={event => changeDelay(id, event.target.valueAsNumber)}
+        changeAttack={event => changeAttack(id, event.target.valueAsNumber)}
+        changeDecay={event => changeDecay(id, event.target.valueAsNumber)}
+        changeSustain={event => changeSustain(id, event.target.valueAsNumber)}
+        changeRelease={event => changeRelease(id, event.target.valueAsNumber)}
+      />
+      <GraphicAdsr
+        delay={delay}
+        attack={attack}
+        decay={decay}
+        sustain={sustain}
+        release={release}
+        disabled={bypassed}
+        changeDelay={event => changeDelay(id, event.target.valueAsNumber)}
+        changeAttack={event => changeAttack(id, event.target.valueAsNumber)}
+        changeDecay={event => changeDecay(id, event.target.valueAsNumber)}
+        changeSustain={event => changeSustain(id, event.target.valueAsNumber)}
+        changeRelease={event => changeRelease(id, event.target.valueAsNumber)}
+      />*/
 
   return (
     <div>

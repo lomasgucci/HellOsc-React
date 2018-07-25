@@ -3,8 +3,15 @@ import React from "react";
 class AdsrEnvelope extends React.Component {
   constructor(props) {
     super(props);
-    const { audioContext } = this.props;
-    this.envelope = audioContext.createConstantSource();
+    const {
+      id,
+      delay,
+      attack,
+      audioContext,
+      decay,
+      sustain,
+      release
+    } = this.props;
   }
 }
 
