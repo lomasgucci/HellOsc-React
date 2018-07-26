@@ -5,7 +5,8 @@ const { Types, Creators } = createActions({
     "paramId",
     "description",
     "reference",
-    "maxDepth"
+    "maxDepth",
+    "destinationType"
   ]
 });
 

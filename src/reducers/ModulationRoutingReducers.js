@@ -5,10 +5,18 @@ import { getIdentifier } from "../utils";
 const INITIAL_STATE = {};
 
 const registerModulationRoute = state => {
-  const id = getIdentifier();
+  const routeId = getIdentifier();
   return {
     ...state,
-    [id]: { id, depth: 1 }
+    [routeId]: { routeId }
+  };
+};
+
+const createRoute = (state, { source, destination }) => {
+  const routeId = getIdentifier();
+  return {
+    ...state,
+    [routeId]: { routeId, source, destination }
   };
 };
 
@@ -41,6 +49,7 @@ const unregisterModulationRoute = (state, { routeId }) => {
 
 export default createReducer(INITIAL_STATE, {
   [ModulationRoutingConstants.REGISTER_MODULATION_ROUTE]: registerModulationRoute,
+  [ModulationRoutingConstants.CREATE_ROUTE]: createRoute,
   [ModulationRoutingConstants.UPDATE_MODULATION_ROUTE_SOURCE]: updateModulationRouteSource,
   [ModulationRoutingConstants.UPDATE_MODULATION_ROUTE_DESTINATION]: updateModulationRouteDestination,
   [ModulationRoutingConstants.UPDATE_MODULATION_ROUTE_DEPTH]: updateModulationRouteDepth,

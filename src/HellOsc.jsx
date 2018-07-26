@@ -13,8 +13,9 @@ import ModulationRouter from "./components/ModulationRouter/ModulationRouter";
 import Vco from "./components/Vco";
 
 import store from "./store";
-import VcoActions from "./actions/VcoActions";
+import ModulationDestinationActions from "./actions/ModulationDestinationActions";
 import LfoActions from "./actions/LfoActions";
+import VcoActions from "./actions/VcoActions";
 
 class HellOsc extends React.Component {
   state = {
@@ -27,32 +28,39 @@ class HellOsc extends React.Component {
   };
 
   componentDidMount() {
-    const { changeVcoOutput } = this.props;
+    const { changeVcoOutput, registerModulationDestination } = this.props;
     const { gain } = this.state;
-    const audioContext = new (window.AudioContext ||
+    this.audioContext = new (window.AudioContext ||
       window.webkitAudioContext)();
-    const mainOutput = audioContext.createGain();
-    mainOutput.gain.value = gain;
-    mainOutput.connect(audioContext.destination);
-    changeVcoOutput("vco1", mainOutput);
-    changeVcoOutput("vco2", mainOutput);
-    changeVcoOutput("vco3", mainOutput);
-    this.setState({ audioContext, mainOutput });
+    this.mainOutput = this.audioContext.createGain();
+    this.mainOutput.gain.value = gain;
+    this.mainOutput.connect(this.audioContext.destination);
+    // changeVcoOutput("vco1", this.mainOutput);
+    // changeVcoOutput("vco2", this.mainOutput);
+    // changeVcoOutput("vco3", this.mainOutput);
 
     this.enableMidi();
+
+    registerModulationDestination(
+      "mainOutput",
+      "Main Output",
+      this.mainOutput,
+      1,
+      "input"
+    );
   }
 
   componentDidUpdate() {
-    const { audioContext, gain, mainOutput, midiEnabled } = this.state;
-    mainOutput.gain.setValueAtTime(gain, audioContext.currentTime);
+    const { gain, midiEnabled } = this.state;
+    this.mainOutput.gain.setValueAtTime(gain, this.audioContext.currentTime);
+    //This is for Codesandbox hot reloading
     if (WebMidi.enabled && !midiEnabled) {
       this.enableMidi();
     }
   }
 
   componentWillUnmount() {
-    const { audioContext } = this.state;
-    audioContext.close();
+    this.audioContext.close();
   }
 
   enableMidi = () => {
@@ -85,8 +93,7 @@ class HellOsc extends React.Component {
     }
   };
 
-  changeGain = event =>
-    this.setState({ gain: Number.parseFloat(event.target.value) });
+  changeGain = event => this.setState({ gain: event.target.valueAsNumber });
 
   changeMidiInput = event => {
     const currentMidiInput = this.state.selectedMidiInput;
@@ -140,12 +147,14 @@ class HellOsc extends React.Component {
     store.dispatch({ type: "RESET" });
   };
 
+  saveState = () => {
+    console.log(store, store.getState());
+  };
+
   render() {
     const { createLfo, lfo } = this.props;
     const {
-      audioContext,
       gain,
-      mainOutput,
       mainOutputMuted,
       midiEnabled,
       selectedMidiInput,
@@ -153,7 +162,7 @@ class HellOsc extends React.Component {
       notes
     } = this.state;
 
-    if (audioContext) {
+    if (this.audioContext) {
       return (
         <div>
           <MidiInputSelector
@@ -162,34 +171,37 @@ class HellOsc extends React.Component {
             selectedInput={selectedMidiInput}
             changeMidiInput={this.changeMidiInput}
           />
+          <IconButton onClick={this.saveState}>
+            <i className="fal fa-save" />
+          </IconButton>
           <IconButton onClick={this.reset}>
             <i className="fal fa-trash" />
           </IconButton>
           <div className="vco-container">
             <Vco
-              audioContext={audioContext}
+              audioContext={this.audioContext}
               id="vco1"
               label="VCO 1"
               mainOutputGain={gain}
-              mainOutput={mainOutput}
+              mainOutput={this.mainOutput}
               mainOutputMuted={mainOutputMuted}
               notes={notes}
             />
             <Vco
-              audioContext={audioContext}
+              audioContext={this.audioContext}
               id="vco2"
               label="VCO 2"
               mainOutputGain={gain}
-              mainOutput={mainOutput}
+              mainOutput={this.mainOutput}
               mainOutputMuted={mainOutputMuted}
               notes={notes}
             />
             <Vco
-              audioContext={audioContext}
+              audioContext={this.audioContext}
               id="vco3"
               label="VCO 3"
               mainOutputGain={gain}
-              mainOutput={mainOutput}
+              mainOutput={this.mainOutput}
               mainOutputMuted={mainOutputMuted}
               notes={notes}
             />
@@ -200,7 +212,7 @@ class HellOsc extends React.Component {
           {Object.keys(lfo).map(id => {
             return (
               <Lfo
-                audioContext={audioContext}
+                audioContext={this.audioContext}
                 key={id}
                 id={id}
                 masterGainLevel={gain}
@@ -223,7 +235,10 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ ...VcoActions, ...LfoActions }, dispatch);
+  bindActionCreators(
+    { ...VcoActions, ...LfoActions, ...ModulationDestinationActions },
+    dispatch
+  );
 
 export default connect(
   mapStateToProps,

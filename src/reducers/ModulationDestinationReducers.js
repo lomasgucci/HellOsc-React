@@ -6,10 +6,13 @@ const INITIAL_STATE = {};
 
 const registerModulationDestination = (
   state,
-  { paramId, description, reference, maxDepth }
+  { paramId, description, reference, maxDepth, destinationType }
 ) => {
   const id = getIdentifier();
-  return { ...state, [id]: { id, paramId, description, reference, maxDepth } };
+  return {
+    ...state,
+    [id]: { id, paramId, description, reference, maxDepth, destinationType }
+  };
 };
 
 export default createReducer(INITIAL_STATE, {

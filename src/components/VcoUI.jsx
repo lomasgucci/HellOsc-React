@@ -141,19 +141,6 @@ function VcoUI(props) {
         changeSustain={event => changeSustain(id, event.target.valueAsNumber)}
         changeRelease={event => changeRelease(id, event.target.valueAsNumber)}
       />
-      <GraphicAdsr
-        delay={delay}
-        attack={attack}
-        decay={decay}
-        sustain={sustain}
-        release={release}
-        disabled={bypassed}
-        changeDelay={event => changeDelay(id, event.target.valueAsNumber)}
-        changeAttack={event => changeAttack(id, event.target.valueAsNumber)}
-        changeDecay={event => changeDecay(id, event.target.valueAsNumber)}
-        changeSustain={event => changeSustain(id, event.target.valueAsNumber)}
-        changeRelease={event => changeRelease(id, event.target.valueAsNumber)}
-      />
     </div>
   );
 }

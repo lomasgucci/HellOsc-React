@@ -23,7 +23,7 @@ class Lfo extends React.Component {
     this.lfo.frequency.value = frequency;
     this.lfo.type = waveType;
 
-    registerModulationSource(id, description, "lfo");
+    registerModulationSource(id, description, "modulation");
   }
 
   componentDidMount() {
@@ -81,12 +81,13 @@ class Lfo extends React.Component {
 
   connectRoute = route => {
     const { modDestinations, voices } = this.props;
-    const { reference, paramId } = modDestinations[route.destination];
-    if (typeof reference === typeof "" && voices[paramId] !== undefined) {
+    const { destinationType, paramId } = modDestinations[route.destination];
+
+    if (destinationType === "voiceParam" && voices[paramId] !== undefined) {
       voices[paramId].forEach(voice =>
         this.connectToVoiceParameters(route, voice)
       );
-    } else {
+    } else if (destinationType === "param") {
       this.connectToVcoParameters(route);
     }
   };

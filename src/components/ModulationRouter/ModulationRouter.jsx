@@ -3,15 +3,12 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import Button from "@material-ui/core/Button";
-import MenuItem from "@material-ui/core/MenuItem";
 import ModulationRouterRow from "./ModulationRouterRow";
-import Range from "../Range";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Select from "@material-ui/core/Select";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 
@@ -28,9 +25,15 @@ class ModulationRouter extends React.Component {
     updateModulationRouteSource(routeId, source);
   };
   changeDestination = (event, routeId) => {
-    const { updateModulationRouteDestination } = this.props;
+    const {
+      modDestinations,
+      updateModulationRouteDestination,
+      updateModulationRouteDepth
+    } = this.props;
     const destination = event.target.value;
+    const { maxDepth } = modDestinations[destination];
     updateModulationRouteDestination(routeId, destination);
+    updateModulationRouteDepth(routeId, maxDepth);
   };
   changeDepth = (event, routeId) => {
     const { updateModulationRouteDepth } = this.props;
@@ -41,10 +44,19 @@ class ModulationRouter extends React.Component {
     const { unregisterModulationRoute } = this.props;
     unregisterModulationRoute(routeId);
   };
+  routeSort = (a, b) => {
+    const { modSources } = this.props;
+    const aSource = modSources[a.source]
+      ? modSources[a.source].description
+      : "";
+    const bSource = modSources[b.source]
+      ? modSources[b.source].description
+      : "";
+    return aSource === bSource ? 0 : aSource < bSource ? -1 : 1;
+  };
+
   render() {
     const { modDestinations, modRoutes, modSources } = this.props;
-    const sources = Object.values(modSources);
-    const destinations = Object.values(modDestinations);
     return (
       <div className="modulation-router">
         <Toolbar>
@@ -63,27 +75,30 @@ class ModulationRouter extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.values(modRoutes).map(route => {
-              const maxDepth = modDestinations[route.destination]
-                ? modDestinations[route.destination].maxDepth
-                : 1;
-              return (
-                <ModulationRouterRow
-                  key={route.id}
-                  sources={sources}
-                  source={route.source}
-                  destinations={destinations}
-                  destination={route.destination}
-                  depth={route.depth}
-                  maxDepth={maxDepth}
-                  routeId={route.id}
-                  changeSource={this.changeSource}
-                  changeDestination={this.changeDestination}
-                  changeDepth={this.changeDepth}
-                  removeRoute={this.removeRoute}
-                />
-              );
-            })}
+            {Object.values(modRoutes)
+              .sort(this.routeSort)
+              .map(route => {
+                console.log(route);
+                const maxDepth = modDestinations[route.destination]
+                  ? modDestinations[route.destination].maxDepth
+                  : undefined;
+                return (
+                  <ModulationRouterRow
+                    key={route.id}
+                    sources={modSources}
+                    source={route.source}
+                    destinations={modDestinations}
+                    destination={route.destination}
+                    depth={route.depth}
+                    maxDepth={maxDepth}
+                    routeId={route.routeId}
+                    changeSource={this.changeSource}
+                    changeDestination={this.changeDestination}
+                    changeDepth={this.changeDepth}
+                    removeRoute={this.removeRoute}
+                  />
+                );
+              })}
           </TableBody>
         </Table>
       </div>

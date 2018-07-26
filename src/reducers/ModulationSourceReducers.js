@@ -3,8 +3,8 @@ import { ModulationSourceConstants } from "../actions/ModulationSourceActions";
 
 const INITIAL_STATE = {};
 
-const registerModulationSource = (state, { id, description, modType }) => {
-  return { ...state, [id]: { id, description, modType } };
+const registerModulationSource = (state, { id, description, sourceType }) => {
+  return { ...state, [id]: { id, description, sourceType } };
 };
 
 const unregisterModulationSource = (state, { id }) => {
