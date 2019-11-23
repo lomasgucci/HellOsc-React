@@ -93,7 +93,7 @@ function VcoUI(props) {
         max={1}
         step={0.05}
         value={gain}
-        onChange={event => changeGain(id, event.target.valueAsNumber)}
+        onChange={gain => changeGain(id, gain)}
         output={Math.round(gain * 100) + "%"}
       />
       <Range
