@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import Slider from "@material-ui/lab/Slider";
-import Knob from "react-rotary-knob";
+import { Knob } from "react-rotary-knob";
 import TextField from "@material-ui/core/TextField";
 
 function Range(props) {
@@ -22,14 +22,13 @@ function Range(props) {
         InputProps={{ margin: "dense", fullWidth: false, min, max, step }}
         margin="dense"
       />
-      <input
-        type="range"
+      <Knob
         min={min}
         max={max}
-        step={step}
+        unlockDistance={50}
         value={value}
         onChange={onChange}
-        disabled={disabled}
+        // disabled={disabled}
       />
     </div>
   );
