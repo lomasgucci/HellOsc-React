@@ -5,6 +5,7 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@babel/runtime": "7.0.0-beta.55",
     "@material-ui/core": "1.4.0",
     "@material-ui/lab": "1.0.0-alpha.6",
     "@mohayonao/wave-tables": "0.2.0",
