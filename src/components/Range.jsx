@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import Slider from "@material-ui/lab/Slider";
-import Knob from "react-rotary-knob";
+import { Knob } from "react-rotary-knob";
 import TextField from "@material-ui/core/TextField";
 
 function Range(props) {
